@@ -1,1 +1,2 @@
 -- SQL case 02
+-- alteração no SQL case 02
