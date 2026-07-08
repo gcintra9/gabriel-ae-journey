@@ -16,15 +16,15 @@ https://app.powerbi.com/view?r=eyJrIjoiMzgzZmUyYTQtYjE3Mi00Y2M2LWIxZjEtMWFjMjQ0M
 
 Uma empresa fictícia de RevOps B2B precisa consolidar dados espalhados em 5 domínios (leads, oportunidades, atividades de vendas, contratos, custos de marketing) numa única fonte de verdade, capaz de responder perguntas diferentes para três stakeholders diferentes (personas fictícias criadas para o case, com dores de negócio realistas):
 
-> \*\*Diego, Diretor Comercial\*\* , \*"Meu maior problema hoje é que não sei onde estou perdendo negócio. Preciso entender o ciclo de cada vendedor e onde os leads estão travando no funil , se é qualificação ou é preço/concorrência. Hoje eu olho isso em planilha e perco horas toda segunda-feira."\*
+> **Diego, Diretor Comercial** , *"Meu maior problema hoje é que não sei onde estou perdendo negócio. Preciso entender o ciclo de cada vendedor e onde os leads estão travando no funil , se é qualificação ou é preço/concorrência. Hoje eu olho isso em planilha e perco horas toda segunda-feira."*
 
-> \*\*Camila, Head de Marketing\*\* , \*"Estou investindo em quatro canais e não sei qual gera receita de verdade, não só lead. Preciso conectar o lead lá no início com o contrato no final, saber o CAC real por canal, e entender sazonalidade de entrada e de conversão."\*
+> **Camila, Head de Marketing** , *"Estou investindo em quatro canais e não sei qual gera receita de verdade, não só lead. Preciso conectar o lead lá no início com o contrato no final, saber o CAC real por canal, e entender sazonalidade de entrada e de conversão."*
 
-> \*\*Rafael, CEO\*\* , \*"Quero uma página que me dê o estado do negócio em 30 segundos: MRR, crescimento, churn, pipeline e projeção. Se algum número estiver vermelho, eu entro no detalhe com o Diretor Comercial."\*
+> **Rafael, CEO** , *"Quero uma página que me dê o estado do negócio em 30 segundos: MRR, crescimento, churn, pipeline e projeção. Se algum número estiver vermelho, eu entro no detalhe com o Diretor Comercial."*
 
 Cada página do dashboard foi desenhada como resposta direta a um desses relatos , não como um conjunto genérico de KPIs de RevOps. A seção **Fit stakeholder × entrega**, mais abaixo, documenta esse mapeamento ponto a ponto.
 
-A base (`revops\_enriched\_v3.sql`) tem \~600 leads, \~400 oportunidades, \~900 atividades e \~200 contratos ao longo de 18 meses, com sujeira proposital (nulos, formatos inconsistentes, datas fora de ordem) para simular um ambiente real.
+A base (`revops_enriched_v3.sql`) tem ~600 leads, ~400 oportunidades, ~900 atividades e ~200 contratos ao longo de 18 meses, com sujeira proposital (nulos, formatos inconsistentes, datas fora de ordem) para simular um ambiente real.
 
 ---
 
@@ -58,14 +58,14 @@ Cada decisão aqui resolve um problema específico que apareceu durante a constr
 |-|-|-|-|
 |1|Schemas separados (`staging`/`tratamento`/`dw`)|Lógica de negócio misturada com ingestão bruta, dificultando debug|Separação de responsabilidades, base de qualquer pipeline auditável|
 |2|TRUNCATE para dimensões pequenas, MERGE para fatos de maior volume|Overhead desnecessário de comparação linha a linha em tabelas 100% substituídas a cada carga|Decisão de performance com critério explícito, não regra genérica copiada|
-|3|Chave natural em `dim\_vendedor` (sem surrogate key)|Adicionar uma chave técnica que nenhuma fato usa não agrega valor , só mais uma coluna pra manter|Saber quando *não* aplicar um padrão, e não só quando aplicar|
-|4|Refatoração fato → dimensão (`fact\_oportunidades` → `dim\_oportunidades` + `fact\_oportunidades`)|Tabela fato carregando atributos descritivos junto com métricas, violando Kimball|Reconhecer e corrigir um erro de modelagem clássico antes de ele virar dívida técnica|
+|3|Chave natural em `dim_vendedor` (sem surrogate key)|Adicionar uma chave técnica que nenhuma fato usa não agrega valor , só mais uma coluna pra manter|Saber quando *não* aplicar um padrão, e não só quando aplicar|
+|4|Refatoração fato → dimensão (`fact_oportunidades` → `dim_oportunidades` + `fact_oportunidades`)|Tabela fato carregando atributos descritivos junto com métricas, violando Kimball|Reconhecer e corrigir um erro de modelagem clássico antes de ele virar dívida técnica|
 |5|Eliminação de referência fato-para-fato|Acoplamento entre fatos que quebra a independência de grão entre elas|Entendimento de dependência de schema, não só de sintaxe SQL|
-|6|Calendário dinâmico (`generate\_series` + `EXTRACT(ISODOW)`)|Dimensão calendário hardcoded que não se atualiza sozinha com novos dados|Automação da manutenção da própria dimensão|
+|6|Calendário dinâmico (`generate_series` + `EXTRACT(ISODOW)`)|Dimensão calendário hardcoded que não se atualiza sozinha com novos dados|Automação da manutenção da própria dimensão|
 |7|Flag BOOLEAN + motivo VARCHAR para anomalias|Um único campo de texto não suporta múltiplos cenários de anomalia simultâneos|Modelagem pensando em como o campo será *filtrado* no BI, não só armazenado|
-|8|Regras de negócio centralizadas na camada de tratamento (ex: `ciclo\_dias` não é calculado no DAX)|Duas ferramentas de BI diferentes calculando a mesma métrica de formas diferentes|Fonte única da verdade , o requisito mais citado (e mais ignorado) em times de dados|
-|9|`dim\_canal` com `chave\_canal` (canal\|subcanal)|Chave composta no Power BI, que complica relacionamento e DAX|Simplificação do lado do consumo, não só do lado do banco|
-|10|`fact\_leads` minimalista (id + data)|Fato carregando atributos que mudam de valor ao longo do tempo, quebrando a granularidade|Entendimento de que fato é evento, dimensão é contexto|
+|8|Regras de negócio centralizadas na camada de tratamento (ex: `ciclo_dias` não é calculado no DAX)|Duas ferramentas de BI diferentes calculando a mesma métrica de formas diferentes|Fonte única da verdade , o requisito mais citado (e mais ignorado) em times de dados|
+|9|`dim_canal` com `chave_canal` (canal\|subcanal)|Chave composta no Power BI, que complica relacionamento e DAX|Simplificação do lado do consumo, não só do lado do banco|
+|10|`fact_leads` minimalista (id + data)|Fato carregando atributos que mudam de valor ao longo do tempo, quebrando a granularidade|Entendimento de que fato é evento, dimensão é contexto|
 
 ---
 
@@ -73,9 +73,9 @@ Cada decisão aqui resolve um problema específico que apareceu durante a constr
 
 Ingestão 1:1 com a origem, sem tratamento de regra de negócio , só tipagem e organização.
 
-`ST\_LEADS` · `ST\_OPORTUNIDADES` · `ST\_ATIVIDADES` · `ST\_CONTRATOS` · `ST\_VENDEDOR` · `ST\_PLANOS` · `ST\_METAS` · `ST\_CUSTOS`
+`ST_LEADS` · `ST_OPORTUNIDADES` · `ST_ATIVIDADES` · `ST_CONTRATOS` · `ST_VENDEDOR` · `ST_PLANOS` · `ST_METAS` · `ST_CUSTOS`
 
-Orquestrada por `USP\_ST\_CARGA\_GERAL()`.
+Orquestrada por `USP_ST_CARGA_GERAL()`.
 
 ---
 
@@ -83,26 +83,26 @@ Orquestrada por `USP\_ST\_CARGA\_GERAL()`.
 
 Onde a sujeira dos dados é resolvida e as regras de negócio ganham vida. Alguns exemplos que valem destaque:
 
-* **`VW\_D\_LEADS`** , capitalização, e-mail/telefone padronizados, `classificacao\_score` derivada
-* **`VW\_D\_CANAL`** , unifica canais vindos de leads e de custos via `UNION` (não `UNION ALL` , aqui a deduplicação é intencional)
-* **`VW\_D\_CALENDARIO`** , gerada dinamicamente a partir do intervalo real dos dados (`MIN(leads)` até `MAX(contratos)`)
-* **`VW\_F\_OPORTUNIDADES`** , calcula `ciclo\_dias` e sinaliza `flag\_anomalia\_data`
-* **`VW\_F\_CONTRATOS`** , `flag\_anomalia` (BOOLEAN) + `motivo` (VARCHAR), cobrindo inclusive o cenário de renovação e cancelamento simultâneos
+* **`VW_D_LEADS`** , capitalização, e-mail/telefone padronizados, `classificacao_score` derivada
+* **`VW_D_CANAL`** , unifica canais vindos de leads e de custos via `UNION` (não `UNION ALL` , aqui a deduplicação é intencional)
+* **`VW_D_CALENDARIO`** , gerada dinamicamente a partir do intervalo real dos dados (`MIN(leads)` até `MAX(contratos)`)
+* **`VW_F_OPORTUNIDADES`** , calcula `ciclo_dias` e sinaliza `flag_anomalia_data`
+* **`VW_F_CONTRATOS`** , `flag_anomalia` (BOOLEAN) + `motivo` (VARCHAR), cobrindo inclusive o cenário de renovação e cancelamento simultâneos
 
 ---
 
 ## Camada DW , Star Schema (11 tabelas)
 
-**Dimensões:** `dim\_leads` · `dim\_vendedor` · `dim\_planos` · `dim\_canal` · `dim\_calendario` · `dim\_oportunidades`
-**Fatos:** `fact\_leads` · `fact\_oportunidades` · `fact\_atividades` · `fact\_contratos` · `fact\_metas` · `fact\_custos`
+**Dimensões:** `dim_leads` · `dim_vendedor` · `dim_planos` · `dim_canal` · `dim_calendario` · `dim_oportunidades`
+**Fatos:** `fact_leads` · `fact_oportunidades` · `fact_atividades` · `fact_contratos` · `fact_metas` · `fact_custos`
 
-Orquestrada por `USP\_DW\_CARGA\_GERAL()`, que respeita a ordem de dependência:
+Orquestrada por `USP_DW_CARGA_GERAL()`, que respeita a ordem de dependência:
 
 ```
 1. Dimensões independentes → leads, vendedores, planos, calendário, canal, metas, custos
-2. Dimensão dependente     → dim\_oportunidades (depende de dim\_leads e dim\_vendedor)
-3. Fato 1:1                → fact\_oportunidades (depende de dim\_oportunidades)
-4. Fatos dependentes       → fact\_leads, fact\_atividades, fact\_contratos
+2. Dimensão dependente     → dim_oportunidades (depende de dim_leads e dim_vendedor)
+3. Fato 1:1                → fact_oportunidades (depende de dim_oportunidades)
+4. Fatos dependentes       → fact_leads, fact_atividades, fact_contratos
 ```
 
 ---
@@ -119,15 +119,15 @@ Cada página tem um **insight dinâmico gerado via DAX** (`SWITCH(TRUE())`) que 
 
 ### Página 1 - Resumo Executivo (Rafael, CEO)
 
-![Resumo Executivo](images/01\_resumo\_executivo.png)
+![Resumo Executivo](images/01_resumo_executivo.png)
 
 ### Página 2 - Performance Comercial (Diego, Diretor Comercial)
 
-![Performance Comercial](images/02\_performance\_comercial.png)
+![Performance Comercial](images/02_performance_comercial.png)
 
 ### Página 3 - Marketing (Camila, Head de Marketing)
 
-![Marketing](images/03\_marketing.png)
+![Marketing](images/03_marketing.png)
 
 **Interatividade como resposta a necessidade real, não só recurso do BI:**
 
@@ -158,9 +158,9 @@ Além da nota técnica, cada página foi avaliada contra o relato original do st
 
 Documentar só o resultado final esconde a parte mais valiosa do processo. Estes foram os 3 problemas reais encontrados em revisão e a correção aplicada:
 
-1. **Erro de sintaxe em CTE** (`VW\_F\_LEADS`) , um `;` posicionado antes do fechamento do CTE quebrava a view. Corrigido movendo o `;` para o fim da query.
-2. **`TRUNCATE ... CASCADE` como risco silencioso** , `dim\_leads` e `dim\_vendedor` são referenciadas por FK em `dim\_oportunidades` e `fact\_metas`. Um `TRUNCATE` simples falha por violação de integridade referencial; um `TRUNCATE ... CASCADE` resolve o erro mas apaga em cascata todas as tabelas dependentes , seguro apenas se toda a carga for sempre executada via `USP\_DW\_CARGA\_GERAL()` de ponta a ponta. Resolvido substituindo por `MERGE` (upsert + delete de órfãos) nas duas dimensões referenciadas, mantendo `TRUNCATE` simples nas dimensões sem dependentes (mais eficiente onde é seguro).
-3. **Referência fato-para-fato não documentada** , `fact\_atividades` referenciava `fact\_oportunidades` diretamente, contradizendo a decisão arquitetural #5 (fato-para-fato eliminado). Corrigido apontando a FK para `dim\_oportunidades`, restaurando a consistência entre documentação e código.
+1. **Erro de sintaxe em CTE** (`VW_F_LEADS`) , um `;` posicionado antes do fechamento do CTE quebrava a view. Corrigido movendo o `;` para o fim da query.
+2. **`TRUNCATE ... CASCADE` como risco silencioso** , `dim_leads` e `dim_vendedor` são referenciadas por FK em `dim_oportunidades` e `fact_metas`. Um `TRUNCATE` simples falha por violação de integridade referencial; um `TRUNCATE ... CASCADE` resolve o erro mas apaga em cascata todas as tabelas dependentes , seguro apenas se toda a carga for sempre executada via `USP_DW_CARGA_GERAL()` de ponta a ponta. Resolvido substituindo por `MERGE` (upsert + delete de órfãos) nas duas dimensões referenciadas, mantendo `TRUNCATE` simples nas dimensões sem dependentes (mais eficiente onde é seguro).
+3. **Referência fato-para-fato não documentada** , `fact_atividades` referenciava `fact_oportunidades` diretamente, contradizendo a decisão arquitetural #5 (fato-para-fato eliminado). Corrigido apontando a FK para `dim_oportunidades`, restaurando a consistência entre documentação e código.
 4. **Medida de projeção de MRR sem quebrar a formatação condicional** , o desafio: adicionar uma projeção de MRR ao gráfico principal sem perder a cor condicional por atingimento de meta (aplicada só na série de barras) e sem distorcer o dado real. A primeira versão calculava o MRR base no contexto de linha errado (retornando zero no mês projetado); depois de corrigido, o ponto isolado não tinha como virar linha (Power BI não desenha traço com 1 ponto só); a solução final usa uma medida com `SWITCH(TRUE())` que repete o MRR real numa janela de 3 meses (para dar "início" visual à linha) e calcula a projeção via run-rate de MoM médio apenas no mês seguinte ao último dado real , sem machine learning, proporcional ao pedido do stakeholder ("saber se estamos crescendo", não uma previsão estatística precisa).
 
 ---
@@ -169,10 +169,10 @@ Documentar só o resultado final esconde a parte mais valiosa do processo. Estes
 
 ```sql
 -- 1. Carrega a camada de staging (ingestão bruta)
-CALL USP\_ST\_CARGA\_GERAL();
+CALL USP_ST_CARGA_GERAL();
 
 -- 2. Carrega o DW (dimensões → dimensão dependente → fatos)
-CALL USP\_DW\_CARGA\_GERAL();
+CALL USP_DW_CARGA_GERAL();
 ```
 
 Testado com execução dupla consecutiva para garantir idempotência (nenhuma procedure depende de o banco estar vazio para rodar corretamente).
@@ -184,7 +184,7 @@ Testado com execução dupla consecutiva para garantir idempotência (nenhuma pr
 * **Banco:** PostgreSQL (plpgsql , procedures, views, MERGE)
 * **Modelagem:** Star Schema (Kimball)
 * **BI:** Power BI (DAX avançado , RANKX, ALLSELECTED, SWITCH(TRUE()))
-* **Documentação:** `BUSINESS\_RULES.md` (PT/EN)
+* **Documentação:** `BUSINESS_RULES.md` (PT/EN)
 
 ---
 
