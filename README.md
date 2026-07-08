@@ -80,5 +80,5 @@ gabriel-ae-journey/
 
 ## Contato
 
-[!\[LinkedIn](https://img.shields.io/badge/LinkedIn-gabriel--cintra--power--bi-0A66C2?style=flat\&logo=linkedin\&logoColor=white)](https://linkedin.com/in/gabriel-cintra-power-bi)
+[!\[LinkedIn](https://img.shields.io/badge/LinkedIn-gabriel--cintra--power--bi-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/gabriel-cintra-power-bi)
 
