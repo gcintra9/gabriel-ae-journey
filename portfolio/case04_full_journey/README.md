@@ -1,16 +1,16 @@
 # Case 04 - Full Journey: Pipeline RevOps B2B (Lead → Contrato)
 
-!\[PostgreSQL](https://img.shields.io/badge/PostgreSQL-plpgsql-336791?logo=postgresql\&logoColor=white)
-!\[Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?logo=powerbi\&logoColor=black)
-!\[Status](https://img.shields.io/badge/status-concluído-brightgreen)
-!\[Modelo](https://img.shields.io/badge/modelagem-Star%20Schema%20(Kimball)-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-plpgsql-336791?logo=postgresql&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?logo=powerbi&logoColor=black)
+![Status](https://img.shields.io/badge/status-concluído-brightgreen)
+![Modelo](https://img.shields.io/badge/modelagem-Star%20Schema%20(Kimball)-blue)
 
 Pipeline completo de dados de RevOps B2B, do lead até o contrato ativo: ingestão, tratamento de dados sujos, modelagem dimensional e um dashboard executivo com 3 páginas segmentadas por persona (Diretor Comercial, CEO, Head de Marketing).
 
 **Dashboard publicado (Power BI Service):**
 https://app.powerbi.com/view?r=eyJrIjoiMzgzZmUyYTQtYjE3Mi00Y2M2LWIxZjEtMWFjMjQ0MDU4Nzc0IiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9
 
-\---
+---
 
 ## Contexto de negócio
 
@@ -26,7 +26,7 @@ Cada página do dashboard foi desenhada como resposta direta a um desses relatos
 
 A base (`revops\_enriched\_v3.sql`) tem \~600 leads, \~400 oportunidades, \~900 atividades e \~200 contratos ao longo de 18 meses, com sujeira proposital (nulos, formatos inconsistentes, datas fora de ordem) para simular um ambiente real.
 
-\---
+---
 
 ## Arquitetura
 
@@ -48,7 +48,7 @@ Power BI         ← 3 páginas por persona, DAX avançado, insights dinâmicos
 
 Cada camada tem uma responsabilidade única e não pula etapa , uma regra de negócio nunca é calculada direto no DAX se ela puder ser resolvida na camada de tratamento. Essa disciplina é o que permite que qualquer ferramenta de BI futura (não só Power BI) consuma o mesmo DW sem reescrever lógica.
 
-\---
+---
 
 ## As 10 decisões arquiteturais
 
@@ -67,7 +67,7 @@ Cada decisão aqui resolve um problema específico que apareceu durante a constr
 |9|`dim\_canal` com `chave\_canal` (canal\|subcanal)|Chave composta no Power BI, que complica relacionamento e DAX|Simplificação do lado do consumo, não só do lado do banco|
 |10|`fact\_leads` minimalista (id + data)|Fato carregando atributos que mudam de valor ao longo do tempo, quebrando a granularidade|Entendimento de que fato é evento, dimensão é contexto|
 
-\---
+---
 
 ## Camada de Staging (8 tabelas)
 
@@ -77,7 +77,7 @@ Ingestão 1:1 com a origem, sem tratamento de regra de negócio , só tipagem e 
 
 Orquestrada por `USP\_ST\_CARGA\_GERAL()`.
 
-\---
+---
 
 ## Camada de Tratamento (12 views)
 
@@ -89,7 +89,7 @@ Onde a sujeira dos dados é resolvida e as regras de negócio ganham vida. Algun
 * **`VW\_F\_OPORTUNIDADES`** , calcula `ciclo\_dias` e sinaliza `flag\_anomalia\_data`
 * **`VW\_F\_CONTRATOS`** , `flag\_anomalia` (BOOLEAN) + `motivo` (VARCHAR), cobrindo inclusive o cenário de renovação e cancelamento simultâneos
 
-\---
+---
 
 ## Camada DW , Star Schema (11 tabelas)
 
@@ -105,7 +105,7 @@ Orquestrada por `USP\_DW\_CARGA\_GERAL()`, que respeita a ordem de dependência:
 4. Fatos dependentes       → fact\_leads, fact\_atividades, fact\_contratos
 ```
 
-\---
+---
 
 ## Dashboard Power BI - 3 páginas por persona
 
@@ -119,15 +119,15 @@ Cada página tem um **insight dinâmico gerado via DAX** (`SWITCH(TRUE())`) que 
 
 ### Página 1 - Resumo Executivo (Rafael, CEO)
 
-!\[Resumo Executivo](images/01\_resumo\_executivo.png)
+![Resumo Executivo](images/01\_resumo\_executivo.png)
 
 ### Página 2 - Performance Comercial (Diego, Diretor Comercial)
 
-!\[Performance Comercial](images/02\_performance\_comercial.png)
+![Performance Comercial](images/02\_performance\_comercial.png)
 
 ### Página 3 - Marketing (Camila, Head de Marketing)
 
-!\[Marketing](images/03\_marketing.png)
+![Marketing](images/03\_marketing.png)
 
 **Interatividade como resposta a necessidade real, não só recurso do BI:**
 
@@ -140,7 +140,7 @@ Cada página tem um **insight dinâmico gerado via DAX** (`SWITCH(TRUE())`) que 
 
 **Dashboard publicado (view-only, sem download do modelo):** o link no topo deste README leva à versão publicada no Power BI Service , permite navegar e interagir com os 3 painéis sem expor o arquivo `.pbix` de origem.
 
-\---
+---
 
 ## Fit stakeholder × entrega
 
@@ -152,7 +152,7 @@ Além da nota técnica, cada página foi avaliada contra o relato original do st
 
 **Rafael (CEO):** KPIs + banner de insight cobrem o "30 segundos"; scatter com toggle Squad/Vendedor funciona como preparo de conversa com o Diretor Comercial, não como ferramenta de decisão solo; projeção de MRR via run-rate de 3 meses (sem ML , desproporcional ao escopo e ao pedido real do stakeholder).
 
-\---
+---
 
 ## Desafios técnicos reais (e como foram resolvidos)
 
@@ -163,7 +163,7 @@ Documentar só o resultado final esconde a parte mais valiosa do processo. Estes
 3. **Referência fato-para-fato não documentada** , `fact\_atividades` referenciava `fact\_oportunidades` diretamente, contradizendo a decisão arquitetural #5 (fato-para-fato eliminado). Corrigido apontando a FK para `dim\_oportunidades`, restaurando a consistência entre documentação e código.
 4. **Medida de projeção de MRR sem quebrar a formatação condicional** , o desafio: adicionar uma projeção de MRR ao gráfico principal sem perder a cor condicional por atingimento de meta (aplicada só na série de barras) e sem distorcer o dado real. A primeira versão calculava o MRR base no contexto de linha errado (retornando zero no mês projetado); depois de corrigido, o ponto isolado não tinha como virar linha (Power BI não desenha traço com 1 ponto só); a solução final usa uma medida com `SWITCH(TRUE())` que repete o MRR real numa janela de 3 meses (para dar "início" visual à linha) e calcula a projeção via run-rate de MoM médio apenas no mês seguinte ao último dado real , sem machine learning, proporcional ao pedido do stakeholder ("saber se estamos crescendo", não uma previsão estatística precisa).
 
-\---
+---
 
 ## Como executar
 
@@ -177,7 +177,7 @@ CALL USP\_DW\_CARGA\_GERAL();
 
 Testado com execução dupla consecutiva para garantir idempotência (nenhuma procedure depende de o banco estar vazio para rodar corretamente).
 
-\---
+---
 
 ## Stack técnica
 
@@ -186,7 +186,7 @@ Testado com execução dupla consecutiva para garantir idempotência (nenhuma pr
 * **BI:** Power BI (DAX avançado , RANKX, ALLSELECTED, SWITCH(TRUE()))
 * **Documentação:** `BUSINESS\_RULES.md` (PT/EN)
 
-\---
+---
 
 ## Autor
 
