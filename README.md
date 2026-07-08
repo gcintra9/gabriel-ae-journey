@@ -1,11 +1,11 @@
 # Gabriel Cintra - Analytics Engineer Journey
 
-!\[SQL](https://img.shields.io/badge/SQL-PostgreSQL-336791?style=flat\&logo=postgresql\&logoColor=white)
-!\[Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat\&logo=python\&logoColor=white)
-!\[dbt](https://img.shields.io/badge/dbt-Core-FF694B?style=flat\&logo=dbt\&logoColor=white)
-!\[Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?style=flat\&logo=powerbi\&logoColor=black)
-!\[BigQuery](https://img.shields.io/badge/BigQuery-GCP-4285F4?style=flat\&logo=googlecloud\&logoColor=white)
-!\[Git](https://img.shields.io/badge/Git-GitHub-181717?style=flat\&logo=github\&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat&logo=python&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt-Core-FF694B?style=flat&logo=dbt&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?style=flat&logo=powerbi&logoColor=black)
+![BigQuery](https://img.shields.io/badge/BigQuery-GCP-4285F4?style=flat&logo=googlecloud&logoColor=white)
+![Git](https://img.shields.io/badge/Git-GitHub-181717?style=flat&logo=github&logoColor=white)
 
 Repositório de estudos e projetos práticos na jornada de transição para **Analytics Engineering**.
 Foco em SQL avançado, modelagem dimensional, pipelines com dbt, Python para dados e BigQuery.
@@ -59,14 +59,14 @@ gabriel-ae-journey/
 
 ## Stack técnico
 
-**Dados \& Transformação**
+**Dados & Transformação**
 
 * SQL avançado - CTEs, window functions, otimização de queries, MERGE/upsert
 * Modelagem dimensional - star schema (Kimball), refatoração fato/dimensão, flags de qualidade
 * dbt Core - modelagem dimensional, testes, documentação, BUSINESS\_RULES.md *(em formação)*
 * Python - pandas, sqlalchemy, requests, ingestão via API *(em formação)*
 
-**Plataformas \& Cloud**
+**Plataformas & Cloud**
 
 * PostgreSQL (local) · BigQuery / GCP *(em formação)*
 * Microsoft Fabric · Apache HOP · Microsoft Power BI (DAX avançado)
@@ -80,5 +80,5 @@ gabriel-ae-journey/
 
 ## Contato
 
-[!\[LinkedIn](https://img.shields.io/badge/LinkedIn-gabriel--cintra--power--bi-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/gabriel-cintra-power-bi)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-gabriel--cintra--power--bi-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/gabriel-cintra-power-bi)
 
