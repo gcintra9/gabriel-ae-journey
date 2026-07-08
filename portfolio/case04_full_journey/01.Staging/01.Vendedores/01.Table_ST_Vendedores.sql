@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS staging.ST_VENDEDOR
+(
+  vendedor VARCHAR (100)
+, squad    VARCHAR (50)
+);
